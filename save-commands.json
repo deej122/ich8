@@ -1,0 +1,5 @@
+{
+    "commands": [
+        "**/*.less : lessc {absPath}{filename} {absPath}{name}.css"
+    ]
+}
