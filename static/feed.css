@@ -1,0 +1,149 @@
+body {
+  font-family: 'Raleway', sans-serif;
+}
+.pull-left {
+  float: left;
+}
+.clearfix:before,
+.clearfix:after {
+  content: " ";
+  display: table;
+}
+.clearfix:after {
+  clear: both;
+}
+a {
+  color: #FF6A6A;
+  text-decoration: none;
+}
+a:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+.topbar {
+  background: #fff;
+  border-bottom: 1px solid #FF6A6A;
+  height: 52px;
+  left: 0px;
+  right: 0px;
+  position: fixed;
+  top: 0px;
+}
+.topbar .brand {
+  color: #FF6A6A;
+  font-size: 32px;
+  line-height: 52px;
+  margin-left: 20px;
+}
+.page_content {
+  margin-top: 80px;
+}
+.create_new_post_toggle {
+  border-bottom: 1px solid #ccc;
+  color: #ccc;
+  cursor: text;
+  font-size: 42px;
+  font-style: italic;
+  font-weight: 300;
+  margin: auto auto 40px auto;
+  padding: 0 0 10px 0;
+  width: 60%;
+}
+.new_report_container {
+  margin: auto auto 40px auto;
+  width: 60%;
+}
+.new_report_form {
+  width: 100%;
+}
+.new_report_form label {
+  color: #333;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+.new_report_form input,
+.new_report_form textarea {
+  border: none;
+  border-bottom: 1px solid #ccc;
+  font-size: 22px;
+  font-weight: 300;
+  outline: none;
+  padding: 10px 0px;
+  width: calc(100%);
+}
+.new_report_form textarea {
+  resize: none;
+}
+.new_report_form .description_container {
+  width: 60%;
+}
+.new_report_form .location_container {
+  margin-left: 4%;
+  width: 36%;
+}
+.new_report_form .create_report_button {
+  border: none;
+  border-radius: 2px;
+  background: #FF6A6A;
+  color: #fff;
+  cursor: pointer;
+  font-size: 30px;
+  font-weight: 200;
+  font-style: italic;
+  margin-top: 12px;
+  text-align: center;
+  width: 77%;
+}
+.new_report_form .cancel_report_button {
+  border: none;
+  background: none;
+  color: #FF6A6A;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 200;
+  margin-left: 4%;
+  margin-top: 31px;
+  padding: 0px;
+  width: 19%;
+}
+.new_report_form .cancel_report_button:hover {
+  text-decoration: underline;
+}
+.report_list {
+  margin: auto;
+  width: 60%;
+}
+.report_container {
+  border: 1px solid #FF6A6A;
+  border-radius: 2px;
+  color: #FF6A6A;
+  font-size: 22px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+.report_container:last-of-type {
+  margin-bottom: 0px;
+}
+.report_container .report_description {
+  border-bottom: 1px solid #FF6A6A;
+  font-weight: 300;
+  min-height: 48px;
+  padding: 10px;
+}
+.report_container .report_meta_information {
+  font-size: 20px;
+  font-style: italic;
+  line-height: 42px;
+}
+.report_container .report_date {
+  border-right: 1px solid #FF6A6A;
+  font-weight: 200;
+  padding: 0px 10px;
+  width: 80%;
+}
+.report_container .report_location {
+  font-weight: 400;
+  padding: 0px 10px;
+  text-align: center;
+  width: 15.2%;
+}

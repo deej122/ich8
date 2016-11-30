@@ -1,28 +1,58 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="ich8App">
-
   <head>
       <meta charset="utf-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <meta name="description" content="">
       <meta name="author" content="">
-      
-      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="static/feed.css">
+      <link href="https://fonts.googleapis.com/css?family=Raleway:100,200,200i,300,300i,400" rel="stylesheet">
       <title>ich8 Project - Feed</title>
       <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
       <script src="../static/feed.js"></script>
   </head>
 
   <body ng-controller="FeedCtrl">
-    <form>
-      <input type="text" placeholder="Description" ng-model="report_content.description"/>
-      <input type="text" placeholder="Location" ng-model="report_content.location"/>
-      <button type="button" ng-click="createReport()">Post</button>
-    </form>
-    <div class="report_container" ng-repeat="report in reports track by $index">
-      {{'{{report.description}}'}}
-      {{'{{report.location}}'}}
+    <div class="topbar">
+      <div class="brand">ich8</div>
+    </div>
+    <div class="page_content">
+      <div class="create_new_post_toggle" ng-click="showNewReport=true" ng-show="!showNewReport">
+        Report something that happened...
+      </div>
+      <div class="new_report_container" ng-show="showNewReport">
+        <form class="new_report_form clearfix">
+          <div class="description_container pull-left">
+            <label for="descriptionInput">Description</label>
+            <br/>
+            <textarea placeholder="description of what happened" resize="none" rows="3" id="descriptionInput" class="report_input report_description_input" ng-model="report_content.description">
+            </textarea>
+          </div>
+          <div class="location_container pull-left">
+            <label for="locationInput">Location</label>
+            <br/>
+            <input type="text" placeholder="zip code where it happened" id="locationInput" class="report_input report_location_input" ng-model="report_content.location"/>
+            <button type="button" ng-click="createReport()" class="create_report_button pull-left">Create Post</button>
+            <button type="button" ng-click="showNewReport=false" class="cancel_report_button pull-left">Cancel</button>
+          </div>
+        </form>
+      </div>
+      <div class="report_list">
+        <div class="report_container" ng-repeat="report in reports track by $index">
+          <div class="report_description">
+            {{'{{report.description}}'}}
+          </div>
+          <div class="report_meta_information clearfix">
+            <div class="report_date pull-left">
+              November 25, 2016
+            </div>
+            <div class="report_location pull-left">
+              <a href="/{{'{{report.location}}'}}">{{'{{report.location}}'}}</a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </body>
 

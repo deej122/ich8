@@ -1,5 +1,6 @@
 angular.module('ich8App', [])
   .controller('FeedCtrl', function($scope, $http) {
+      $scope.showNewReport=false;
       console.log("hi");
       $scope.report_content = {};      
       
@@ -16,8 +17,6 @@ angular.module('ich8App', [])
           console.log(error);
         });
       };
-      
-      $scope.getReports();
 
       $scope.createReport = function() {
           $http({
@@ -30,9 +29,11 @@ angular.module('ich8App', [])
               console.log("response: " + response);
               $scope.getReports();
               $scope.report_content = {}
+              $scope.showNewReport = false;
           }, function(error) {
               console.log(error);
           });
       };
 
+      $scope.getReports();
   })
