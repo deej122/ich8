@@ -1,5 +1,5 @@
 angular.module('ich8App', [])
-  .controller('FeedCtrl', function($scope, $http) {
+  .controller('FeedCtrl', function($scope, $http, $timeout) {
       $scope.showNewReport=false;
       console.log("hi");
       $scope.report_content = {};      
@@ -16,6 +16,7 @@ angular.module('ich8App', [])
         }, function(error) {
           console.log(error);
         });
+        $scope.intervalFunction();
       };
 
       $scope.createReport = function() {
@@ -35,5 +36,11 @@ angular.module('ich8App', [])
           });
       };
 
+      $scope.intervalFunction = function(){
+        $timeout(function() {
+          $scope.getReports();
+        }, 10000)
+      };
+      
       $scope.getReports();
   })

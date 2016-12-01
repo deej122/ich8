@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="ich8App">
+  <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      <link rel="stylesheet" href="static/feed.css">
+      <link href="https://fonts.googleapis.com/css?family=Raleway:100,200,200i,300,300i,400" rel="stylesheet">
+      <title>ich8 Project - Feed</title>
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular-route.min.js"></script>
+      <script src="../static/location_feed.js"></script>
+      <base href="/">
+  </head>
+
+  <body ng-controller="LocationFeedCtrl">
+    <div class="topbar">
+      <div class="brand">ich8</div>
+    </div>
+    <div class="page_content">
+      <div class="report_list">
+        <div class="report_container" ng-repeat="report in reports track by $index">
+          <div class="report_description">
+            {{'{{report.description}}'}}
+          </div>
+          <div class="report_meta_information clearfix">
+            <div class="report_date pull-left">
+              November 25, 2016
+            </div>
+            <div class="report_location pull-left">
+              <a href="/{{'{{report.location}}'}}">{{'{{report.location}}'}}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+
+</html>
