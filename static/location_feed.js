@@ -1,8 +1,8 @@
-angular.module('ich8App', ['ngRoute'])
+angular.module('ich8App', ['ngRoute', 'angularMoment'])
   .config(function($locationProvider, $routeProvider) {
     $locationProvider.html5Mode(true);
   })
-  .controller('LocationFeedCtrl', ['$scope', '$http', '$timeout', '$location', function($scope, $http, $timeout, $location) {
+  .controller('LocationFeedCtrl', ['$scope', '$http', '$timeout', '$location', 'moment', function($scope, $http, $timeout, $location, moment) {
       $scope.showNewReport=false;
       $scope.report_content = {};      
       

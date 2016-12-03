@@ -26,12 +26,13 @@ def showLocationReportList(location):
 @application.route('/<location>/getReports',methods=['POST'])
 def getLocationReports(location):
     try:
-        reports = db.Reports.find({'location': location})
+        reports = db.Reports.find({'location': location}).sort([('$natural', -1)]).limit(50)
         reportList = []
         for report in reports:
             reportItem = {
                     'description':report['description'],
-                    'location':report['location']
+                    'location':report['location'],
+                    'time_received':report['_id'].generation_time.isoformat()
                     }
             reportList.append(reportItem)
     except Exception,e:
