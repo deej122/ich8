@@ -4,6 +4,8 @@ from flask_moment import Moment
 from twilio.rest import TwilioRestClient
 import twilio.twiml
 import datetime
+import uuid
+import re
 
 client = MongoClient('localhost:27017')
 db = client.ReportData
@@ -69,23 +71,56 @@ def getReports():
 def createReportFromText():
     """Respond to incoming calls with a simple text message."""
     
-    try:
-        from_num = request.values.get('From')
-        message_body = request.values.get('Body')
-        time_received = request.values.get('DateCreated')
-        message_split = message_body.split('#')
-        location = message_split[1]
-        
-        db.Reports.insert_one({
-            'description':message_body, 'location':location, 'time_received':time_received, 'owner':from_num
-            })
-        resp = twilio.twiml.Response()
-        resp.message("Your post was made successfully. Thank you for seeing hate and calling it out - keep it up.")
-        return str(resp)
-    except Exception,e:
-        resp = twilio.twiml.Response()
-        resp.message("Sorry, there was an issue creating your report. Make sure your zipcode is included at the end of your message in this format: #12345 or - " + str(e) )
-        return str(resp)
+    # session = request.session
+    mid_post = session.get('mid_post_id')
+    
+    if not mid_post:
+        try:
+            session['from_num'] = request.values.get('From')
+            session['message_body'] = request.values.get('Body')
+            session['time_received'] = request.values.get('DateCreated')
+            
+            # db.Reports.insert_one({
+            #     'description':message_body, 'location':location, 'time_received':time_received, 'owner':from_num
+            #     })
+            session['mid_post_id'] = uuid.uuid4()
+            resp = twilio.twiml.Response()
+            resp.message("What zip code did the incident occur in?")
+            return str(resp)
+        except Exception,e:
+            resp = twilio.twiml.Response()
+            resp.message("Sorry, there was an issue creating your report. Please try again! " + str(e) )
+            return str(resp)
+    else:
+        try:
+            full_location = request.values.get('Body')
+            zip_code = re.search('(\d{5})([- ])?(\d{4})?', full_location)
+            from_num = session['from_num']
+            message_body = session['message_body']
+            time_received = session['time_received']
+            if zip_code is None:
+                resp = twilio.twiml.Response()
+                resp.message("Sorry, looks like you didn't include a zip code. Please re-send your location with a 5-digit zip-code included.")
+                return str(resp)
+            else:
+                try:
+                    zip_code = zip_code.group(0)
+                    db.Reports.insert_one({
+                        'description':message_body, 'full_location':full_location, 'location': zip_code, 'time_received':time_received, 'owner':from_num
+                        })
+                    session.clear()
+                    resp = twilio.twiml.Response()
+                    resp.message("Your post was made successfully. Thank you for seeing hate and calling it out - keep it up!")
+                    return str(resp)
+                except Exception,e:
+                    resp = twilio.twiml.Response()
+                    resp.message("Sorry, there was an issue creating your report. Please send your location, again!" + str(e))
+                    return str(resp)
+                    
+        except Exception,e:
+            resp = twilio.twiml.Response()
+            resp.message("Sorry, there was an issue creating your report. Please send your location, again!" + str(e) )
+            return str(resp)
     
 if __name__ == "__main__":
     application.run(host='0.0.0.0')
