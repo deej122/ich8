@@ -1,5 +1,5 @@
-angular.module('ich8App', [])
-  .controller('FeedCtrl', function($scope, $http, $timeout) {
+angular.module('ich8App', ['angularMoment'])
+  .controller('FeedCtrl', ['$scope', '$http', '$timeout', 'moment', function($scope, $http, $timeout, moment) {
       $scope.showNewReport=false;
       console.log("hi");
       $scope.report_content = {};      
@@ -43,4 +43,4 @@ angular.module('ich8App', [])
       };
       
       $scope.getReports();
-  })
+  }]);

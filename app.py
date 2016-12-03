@@ -44,9 +44,10 @@ def createReport():
         json_data = request.json['info']
         reportDescription = json_data['description']
         reportLocation = json_data['location']
+        reportTime = datetime.datetime.now()
 
         db.Reports.insert_one({
-            'description':reportDescription, 'location':reportLocation
+            'description':reportDescription, 'location':reportLocation, 'time_received':reportTime
             })
         return jsonify(status='OK', message='successfully added to the database')
     except Exception,e:
@@ -55,12 +56,13 @@ def createReport():
 @application.route("/getReports",methods=['POST'])
 def getReports():
     try:
-        reports = db.Reports.find()
+        reports = db.Reports.find().sort([('$natural', -1)]).limit(50)
         reportList = []
         for report in reports:
             reportItem = {
                     'description':report['description'],
-                    'location':report['location']
+                    'location':report['location'],
+                    'time_received':report['_id'].generation_time.isoformat()
                     }
             reportList.append(reportItem)
     except Exception,e:
@@ -78,7 +80,6 @@ def createReportFromText():
         try:
             session['from_num'] = request.values.get('From')
             session['message_body'] = request.values.get('Body')
-            session['time_received'] = request.values.get('DateCreated')
             
             # db.Reports.insert_one({
             #     'description':message_body, 'location':location, 'time_received':time_received, 'owner':from_num
@@ -97,7 +98,6 @@ def createReportFromText():
             zip_code = re.search('(\d{5})([- ])?(\d{4})?', full_location)
             from_num = session['from_num']
             message_body = session['message_body']
-            time_received = session['time_received']
             if zip_code is None:
                 resp = twilio.twiml.Response()
                 resp.message("Sorry, looks like you didn't include a zip code. Please re-send your location with a 5-digit zip-code included.")
@@ -107,7 +107,7 @@ def createReportFromText():
                     zip_code = zip_code.group(0)
                     trimmed_zip_code = zip_code[:5]
                     db.Reports.insert_one({
-                        'description':message_body, 'full_location':full_location, 'location': trimmed_zip_code, 'full_zip_code': zip_code, 'time_received':time_received, 'owner':from_num
+                        'description':message_body, 'full_location':full_location, 'location': trimmed_zip_code, 'full_zip_code': zip_code, 'owner':from_num
                         })
                     session.clear()
                     resp = twilio.twiml.Response()

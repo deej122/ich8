@@ -11,6 +11,8 @@
       <title>ich8 Project - Feed</title>
       <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
       <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular-route.min.js"></script>
+      <script src="../static/libraries/moment.js"></script>
+      <script src="../static/libraries/angular-moment.min.js"></script>
       <script src="../static/feed.js"></script>
   </head>
 
@@ -45,9 +47,7 @@
             {{'{{report.description}}'}}
           </div>
           <div class="report_meta_information clearfix">
-            <div class="report_date pull-left">
-              November 25, 2016
-            </div>
+            <div class="report_date pull-left" am-time-ago="report.time_received"></div>
             <div class="report_location pull-left">
               <a href="/{{'{{report.location}}'}}">{{'{{report.location}}'}}</a>
             </div>
