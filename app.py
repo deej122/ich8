@@ -85,7 +85,7 @@ def createReportFromText():
             #     })
             session['mid_post_id'] = uuid.uuid4()
             resp = twilio.twiml.Response()
-            resp.message("What zip code did the incident occur in?")
+            resp.message("Where did this occur? Please include a 5-digit zip-code in your description.")
             return str(resp)
         except Exception,e:
             resp = twilio.twiml.Response()
@@ -105,8 +105,9 @@ def createReportFromText():
             else:
                 try:
                     zip_code = zip_code.group(0)
+                    trimmed_zip_code = zip_code[:5]
                     db.Reports.insert_one({
-                        'description':message_body, 'full_location':full_location, 'location': zip_code, 'time_received':time_received, 'owner':from_num
+                        'description':message_body, 'full_location':full_location, 'location': trimmed_zip_code, 'full_zip_code': zip_code, 'time_received':time_received, 'owner':from_num
                         })
                     session.clear()
                     resp = twilio.twiml.Response()
