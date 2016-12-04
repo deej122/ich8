@@ -34,11 +34,15 @@ a {
   right: 0px;
   position: fixed;
   top: 0px;
+  z-index: 9999;
   .brand {
     color: @primary;
     font-size: 32px;
     line-height: 52px;
     margin-left: 20px;
+    > a {
+      text-decoration: none;
+    }
   }
 }
 

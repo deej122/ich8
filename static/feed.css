@@ -28,12 +28,16 @@ a:hover {
   right: 0px;
   position: fixed;
   top: 0px;
+  z-index: 9999;
 }
 .topbar .brand {
   color: #FF6A6A;
   font-size: 32px;
   line-height: 52px;
   margin-left: 20px;
+}
+.topbar .brand > a {
+  text-decoration: none;
 }
 .page_content {
   margin-top: 80px;
