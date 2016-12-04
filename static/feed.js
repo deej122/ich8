@@ -6,6 +6,8 @@ angular.module('ich8App', ['angularMoment', 'infinite-scroll'])
       $rootScope.page_num = 0;
       $rootScope.reports = [];
       $rootScope.totalCount = null;
+      
+      $rootScope.loadingResults = false;
       $scope.endOfResults = false;
       
       //for NEW reports that are made (top)
@@ -27,6 +29,8 @@ angular.module('ich8App', ['angularMoment', 'infinite-scroll'])
       
       //for INITIAL set of displayed posts
       $scope.getReports = function() {
+        //show loading animation
+        $rootScope.loadingResults = true;
         $http({
           method: 'POST',
           url: '/getReports'
@@ -44,6 +48,8 @@ angular.module('ich8App', ['angularMoment', 'infinite-scroll'])
         }, function(error) {
           console.log(error);
         });
+        //hide loading animation
+        $rootScope.loadingResults = false;
         //start looking for newly created posts every ten seconds
         $scope.intervalFunction();
       };
@@ -66,6 +72,8 @@ angular.module('ich8App', ['angularMoment', 'infinite-scroll'])
         else {
           //note that a request is currently in progress
           $rootScope.calledForNextPage = true;
+          //show loading animation
+          $rootScope.loadingResults = true;
           //after 2 seconds, make request to server for more posts to show (10 more posts)
           $timeout(function() {
             $http({
@@ -98,6 +106,8 @@ angular.module('ich8App', ['angularMoment', 'infinite-scroll'])
               $rootScope.page_num = $rootScope.page_num + 1;
               //note that a request is not currently in progress anymore
               $rootScope.calledForNextPage = false;
+              //hide loading animation
+              $rootScope.loadingResults = false;
               console.log('more reports ',$scope.reports);
             }, function(error) {
               console.log(error);
