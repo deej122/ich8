@@ -57,7 +57,7 @@ angular.module('ich8App', ['angularMoment', 'infinite-scroll'])
           return;
         }
         //if length of reports (on fe) equals number we have for total reports, stop infinite scroll
-        else if($rootScope.reports.length >= $rootScope.totalCount) {
+        else if($rootScope.reports.length >= $rootScope.totalCount - 1) {
           console.log("end of results");
           $scope.endOfResults = true;
           return;
@@ -77,12 +77,20 @@ angular.module('ich8App', ['angularMoment', 'infinite-scroll'])
             }).then(function(response) {
               //note that last requested post is last item in response
               //using length - 2 because of the "count" included in response.data
-              $rootScope.last_requested = response.data[response.data.length - 2].id;
+              //if there is more than one result in the array, there may be more to load
+              if(response.data.length > 1) {
+                $rootScope.last_requested = response.data[response.data.length - 2].id;  
+              }
+              //if there is not more than one result, we're done loading so stop infinite scroll
+              else {
+                console.log("end of results");
+                $scope.endOfResults = true;
+              }
               //reset totalCount to be whatever it is now (in the db -- may have changed in the meantime)
               $rootScope.totalCount = response.data[response.data.length - 1]['count'];
               console.log(response + "get response");
               //add posts to the reports array that is displaying on the page
-              for(i = 0; i < response.data.length - 2; i++) {
+              for(i = 0; i < response.data.length - 1; i++) {
                 $rootScope.reports.push(response.data[i]);
               }
               console.log("length of reports: " + $rootScope.reports.length);
