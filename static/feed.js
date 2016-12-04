@@ -1,26 +1,60 @@
 angular.module('ich8App', ['angularMoment', 'infinite-scroll'])
   .controller('FeedCtrl', ['$scope', '$http', '$timeout', 'moment', '$rootScope', function($scope, $http, $timeout, moment, $rootScope) {
-      $scope.showNewReport=false;
       console.log("hi");
       $scope.report_content = {};      
       $rootScope.page_num = 0;
       $rootScope.reports = [];
       $rootScope.totalCount = null;
-      
+      $rootScope.new_reports = [];
+      $rootScope.showNewReport=false;
+
       $rootScope.loadingResults = false;
       $scope.endOfResults = false;
       
+      //to add new reports to the top of the feed list vs just showing the number
+      $scope.exposeNewReports = function() {
+        for(i = 0; i < $rootScope.new_reports.length; i++) {
+          $rootScope.reports.unshift($rootScope.new_reports[i]);
+          $rootScope.totalCount = $rootScope.totalCount + 1;
+        }
+        $rootScope.new_reports = [];
+        $rootScope.latestPost = $rootScope.reports[0].id;
+        $rootScope.showNewReport=false;
+      }
       //for NEW reports that are made (top)
       //this does not work right now
       $scope.getNewReports = function(){
+        console.log($rootScope.latestPost);
         $http({
           method: 'POST',
-          url: '/getNewReports'
+          url: '/getNewReports',
+          data: {
+            latest_post: $rootScope.latestPost
+          }
         }).then(function(response) {
-          console.log(response + "get response");
-          $scope.new_reports = response.data;
-          $rootScope.totalCount = response.count;
-          console.log('new reports ',$scope.new_reports);
+          console.log(JSON.stringify(response) + "get response");
+          console.log(response.data[0].id == $rootScope.latestPost);
+          $rootScope.showNewReport = true;
+          console.log($rootScope.new_reports.length);
+          console.log($rootScope.new_reports);
+          if(response.data[0].id == $rootScope.latestPost) {
+            $rootScope.showNewReport = false;
+          }
+          else if($rootScope.new_reports.length > 0) {
+            for(i = 0; i <= response.data.length - 2; i++) {
+              if($scope.containsId($rootScope.new_reports, response.data[i])) {
+                break;
+              }
+              else {
+                $rootScope.new_reports.push(response.data[i]);
+              }
+            }
+          }
+          else {
+            $rootScope.new_reports = response.data;
+            $rootScope.new_reports.pop();
+          }
+          // $rootScope.totalCount = response.data[response.data.length - 1]['count']
         }, function(error) {
           console.log(error);
         });
@@ -39,6 +73,7 @@ angular.module('ich8App', ['angularMoment', 'infinite-scroll'])
           $rootScope.reports = response.data;
           //to remove the "count" object so no blank items show in feed
           $rootScope.reports.pop();
+          $rootScope.latestPost = $rootScope.reports[0].id;
           //initialize page number to be one since we loaded first ten elements now
           $rootScope.page_num = 1;
           //keep track of total number of reports with this (will tell us when to stop infinite scrolling)
@@ -91,7 +126,7 @@ angular.module('ich8App', ['angularMoment', 'infinite-scroll'])
               }
               //if there is not more than one result, we're done loading so stop infinite scroll
               else {
-                console.log("end of results");
+                console.log("end of results 2");
                 $scope.endOfResults = true;
               }
               //reset totalCount to be whatever it is now (in the db -- may have changed in the meantime)
@@ -140,6 +175,16 @@ angular.module('ich8App', ['angularMoment', 'infinite-scroll'])
           $scope.getNewReports();
         }, 10000)
       };
+      
+      //function to find object in array
+      $scope.containsId = function(arr, obj) {
+        for (var i = 0; i < arr.length; i++) {
+          if (arr[i].id === obj.id) {
+            return true;
+          }
+        }
+        return false;
+      }
       
       //get initial set of reports (10 = one page, to start)
       $scope.getReports();

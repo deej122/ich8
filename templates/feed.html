@@ -50,9 +50,8 @@
           </div>
         </form>
       </div> -->
-      <div class="report_list new_reports" style="border: 1px solid #ccc; padding: 5px;">
-        <!-- {{'{{new_reports.length}}'}} -->
-        {{'{{totalCount}}'}}
+      <div class="report_list new_reports" style="border: 1px solid #ccc; padding: 5px;" ng-if="showNewReport == true" ng-click="exposeNewReports()">
+        {{'{{new_reports.length}}'}}
       </div>
       <div class="report_list" infinite-scroll="getMoreReports()" infinite-scroll-distance="1" infinite-scroll-immediate-check="false" infinite-scroll-disabled="endOfResults == true">
         <div class="report_container" ng-repeat="report in reports track by $index">

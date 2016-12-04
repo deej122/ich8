@@ -2,6 +2,7 @@ from flask import Flask,render_template,json,jsonify,request,redirect,session
 from pymongo import MongoClient
 from flask_moment import Moment
 from twilio.rest import TwilioRestClient
+from bson import ObjectId
 import twilio.twiml
 import datetime
 import uuid
@@ -61,13 +62,19 @@ def createReport():
 @application.route("/getNewReports",methods=['POST'])
 def getNewReports():
     try:
-        reports = db.Reports.find().sort([('$natural', -1)])
+        json_data = json_data = request.json['latest_post']
+        latest_post = json_data
+        offset = db.Reports.find({'_id': ObjectId(latest_post)}).count()
+        print offset
+        reports = db.Reports.find().skip(db.Reports.count() - offset).limit(10)
+        reports = reports.sort([('$natural', 1)])
         reportList = []
         for report in reports:
             reportItem = {
                     'description':report['description'],
                     'location':report['location'],
-                    'time_received':report['_id'].generation_time.isoformat()
+                    'time_received':report['_id'].generation_time.isoformat(),
+                    'id':str(report['_id'])
                     }
             reportList.append(reportItem)
         reportList.append({'count': db.Reports.count()})
