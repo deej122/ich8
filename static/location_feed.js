@@ -28,6 +28,7 @@ angular.module('ich8App', ['ngRoute', 'angularMoment'])
         }, 10000)
       };
       
+      //create google map on callback from google map api (called in the url)
       initMap = function(){
         console.log('hi');
         var map = new google.maps.Map(document.getElementById('map'), {
@@ -39,6 +40,7 @@ angular.module('ich8App', ['ngRoute', 'angularMoment'])
       }
       
       $scope.getLocationTitle = function(result){
+        //if there is a county included in the response
         if(Object.keys(result.address_components).length > 4) {
           var zip = result.address_components[0].short_name;
           var city = result.address_components[1].short_name;
@@ -47,6 +49,7 @@ angular.module('ich8App', ['ngRoute', 'angularMoment'])
           var country = result.address_components[4].short_name;
           $scope.locationTitle = city + ', ' + state;
         }
+        //if there is no county included in the response
         else {
           var zip = result.address_components[0].short_name;
           var city = result.address_components[1].short_name;
@@ -54,9 +57,11 @@ angular.module('ich8App', ['ngRoute', 'angularMoment'])
           var country = result.address_components[3].short_name;
           $scope.locationTitle = city + ', ' + state;
         }
+        //apply to scope now instead of waiting for scope to update
         $scope.$apply();
       }
-
+      
+      //add pin to google map on location based on url (zipcode)
       $scope.geocodeAddress = function(geocoder, resultsMap) {
         console.log('yoyo');
         var address = $location.path();
@@ -76,5 +81,6 @@ angular.module('ich8App', ['ngRoute', 'angularMoment'])
         });
       }
       
+      //load in initial reports
       $scope.getReports();
   }]);

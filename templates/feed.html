@@ -9,10 +9,12 @@
       <link rel="stylesheet" href="static/feed.css">
       <link href="https://fonts.googleapis.com/css?family=Raleway:100,200,200i,300,300i,400" rel="stylesheet">
       <title>ich8 Project - Feed</title>
+      <script src="../static/libraries/jquery.min.js"></script>
       <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
       <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular-route.min.js"></script>
       <script src="../static/libraries/moment.js"></script>
       <script src="../static/libraries/angular-moment.min.js"></script>
+      <script src="../static/libraries/ng-infinite-scroll.min.js"></script>
       <script src="../static/feed.js"></script>
   </head>
 
@@ -48,7 +50,11 @@
           </div>
         </form>
       </div> -->
-      <div class="report_list">
+      <div class="report_list new_reports" style="border: 1px solid #ccc; padding: 5px;">
+        <!-- {{'{{new_reports.length}}'}} -->
+        {{'{{totalCount}}'}}
+      </div>
+      <div class="report_list" infinite-scroll="getMoreReports()" infinite-scroll-distance="1" infinite-scroll-immediate-check="false" infinite-scroll-disabled="endOfResults == true">
         <div class="report_container" ng-repeat="report in reports track by $index">
           <div class="report_description">
             {{'{{report.description}}'}}
