@@ -33,7 +33,7 @@ angular.module('ich8App', ['angularMoment', 'infinite-scroll'])
         }).then(function(response) {
           console.log(JSON.stringify(response) + "get response");
           $rootScope.reports = response.data;
-          //to remove the "count" object I added to reflect total count of reports
+          //to remove the "count" object so no blank items show in feed
           $rootScope.reports.pop();
           //initialize page number to be one since we loaded first ten elements now
           $rootScope.page_num = 1;
