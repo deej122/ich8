@@ -28,5 +28,53 @@ angular.module('ich8App', ['ngRoute', 'angularMoment'])
         }, 10000)
       };
       
+      initMap = function(){
+        console.log('hi');
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 10
+        });
+        var geocoder = new google.maps.Geocoder();
+        
+        $scope.geocodeAddress(geocoder, map);
+      }
+      
+      $scope.getLocationTitle = function(result){
+        if(Object.keys(result.address_components).length > 4) {
+          var zip = result.address_components[0].short_name;
+          var city = result.address_components[1].short_name;
+          var county = result.address_components[2].short_name;
+          var state = result.address_components[3].short_name;
+          var country = result.address_components[4].short_name;
+          $scope.locationTitle = city + ', ' + state;
+        }
+        else {
+          var zip = result.address_components[0].short_name;
+          var city = result.address_components[1].short_name;
+          var state = result.address_components[2].short_name;
+          var country = result.address_components[3].short_name;
+          $scope.locationTitle = city + ', ' + state;
+        }
+        $scope.$apply();
+      }
+
+      $scope.geocodeAddress = function(geocoder, resultsMap) {
+        console.log('yoyo');
+        var address = $location.path();
+        geocoder.geocode({'address': address}, function(results, status) {
+          if (status === 'OK') {
+            console.log(results);
+            var result = results[0];
+            $scope.getLocationTitle(result);
+            resultsMap.setCenter(results[0].geometry.location);
+            var marker = new google.maps.Marker({
+              map: resultsMap,
+              position: results[0].geometry.location
+            });
+          } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+          }
+        });
+      }
+      
       $scope.getReports();
   }]);

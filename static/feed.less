@@ -45,17 +45,28 @@ a {
 .page_content {
   margin-top: 80px;
 }
-
-.create_new_post_toggle {
+#map {
+  border: 1px solid @primary;
+  height: 250px;
+  margin: auto auto 20px auto;
+  width: 500px;
+}
+.page_header {
   border-bottom: 1px solid #ccc;
   color: #ccc;
   cursor: text;
-  font-size: 42px;
+  font-size: 40px;
   font-style: italic;
   font-weight: 300;
-  margin: auto auto 40px auto;
+  margin: auto;
   padding: 0 0 10px 0;
   width: 60%;
+  &.location_title {
+    margin-bottom: 20px;
+  }
+  &.create_new_post_notice {
+    margin-bottom: 40px;
+  }
 }
 .new_report_container {
   margin: auto auto 40px auto;

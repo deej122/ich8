@@ -18,13 +18,18 @@
 
   <body ng-controller="FeedCtrl">
     <div class="topbar">
-      <div class="brand">ich8</div>
+      <a href="/">
+        <div class="brand">The ich8 Project</div>
+      </a>
     </div>
     <div class="page_content">
-      <div class="create_new_post_toggle" ng-click="showNewReport=true" ng-show="!showNewReport">
-        Report something that happened...
+      <div class="create_new_post_notice page_header">
+        See something? Text (415)-792-4248 to report it!
       </div>
-      <div class="new_report_container" ng-show="showNewReport">
+      <!-- <div class="create_new_post_toggle page_header" ng-click="showNewReport=true" ng-show="!showNewReport">
+        Report something that happened...
+      </div> -->
+      <!-- <div class="new_report_container" ng-show="showNewReport">
         <form class="new_report_form clearfix">
           <div class="description_container pull-left">
             <label for="descriptionInput">Description</label>
@@ -40,7 +45,7 @@
             <button type="button" ng-click="showNewReport=false" class="cancel_report_button pull-left">Cancel</button>
           </div>
         </form>
-      </div>
+      </div> -->
       <div class="report_list">
         <div class="report_container" ng-repeat="report in reports track by $index">
           <div class="report_description">
