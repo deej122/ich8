@@ -62,22 +62,42 @@ def createReport():
 @application.route("/getNewReports",methods=['POST'])
 def getNewReports():
     try:
-        json_data = json_data = request.json['latest_post']
-        latest_post = json_data
-        offset = db.Reports.find({'_id': ObjectId(latest_post)}).count()
-        print offset
-        reports = db.Reports.find().skip(db.Reports.count() - offset).limit(10)
-        reports = reports.sort([('$natural', 1)])
-        reportList = []
-        for report in reports:
-            reportItem = {
-                    'description':report['description'],
-                    'location':report['location'],
-                    'time_received':report['_id'].generation_time.isoformat(),
-                    'id':str(report['_id'])
-                    }
-            reportList.append(reportItem)
-        reportList.append({'count': db.Reports.count()})
+        json_data = request.json['location']
+        location = json_data
+        if location == 'all':
+            json_data = request.json['latest_post']
+            latest_post = json_data
+            offset = db.Reports.find({'_id': ObjectId(latest_post)}).count()
+            print offset
+            reports = db.Reports.find().skip(db.Reports.count() - offset).limit(10)
+            reports = reports.sort([('$natural', 1)])
+            reportList = []
+            for report in reports:
+                reportItem = {
+                        'description':report['description'],
+                        'location':report['location'],
+                        'time_received':report['_id'].generation_time.isoformat(),
+                        'id':str(report['_id'])
+                        }
+                reportList.append(reportItem)
+            reportList.append({'count': db.Reports.count()})
+        else:
+            json_data = request.json['latest_post']
+            latest_post = json_data
+            offset = db.Reports.find({'_id': ObjectId(latest_post)}).count()
+            print offset
+            reports = db.Reports.find({'location': location}).skip(db.Reports.find({'location': location}).count() - offset).limit(10)
+            reports = reports.sort([('$natural', 1)])
+            reportList = []
+            for report in reports:
+                reportItem = {
+                        'description':report['description'],
+                        'location':report['location'],
+                        'time_received':report['_id'].generation_time.isoformat(),
+                        'id':str(report['_id'])
+                        }
+                reportList.append(reportItem)
+            reportList.append({'count': db.Reports.find({'location': location}).count()})
     except Exception,e:
         return str(e)
     return json.dumps(reportList)
@@ -86,21 +106,40 @@ def getNewReports():
 @application.route("/getReports",methods=['POST'])
 def getReports():
     try:
-        #Find ten reports, sorted in order from newest to oldest
-        reports = db.Reports.find().sort([('$natural', -1)]).limit(10)
-        reportList = []
-        #for every report grab this information
-        for report in reports:
-            reportItem = {
-                    'description':report['description'],
-                    'location':report['location'],
-                    'time_received':report['_id'].generation_time.isoformat(),
-                    'id':str(report['_id'])
-                    }
-            #add the report to our list to send to fe
-            reportList.append(reportItem)
-        #add an object that contains total number of reports in db
-        reportList.append({'count': db.Reports.count()})
+        json_data = request.json['location']
+        location = json_data
+        if location == 'all' :
+            #Find ten reports, sorted in order from newest to oldest
+            reports = db.Reports.find().sort([('$natural', -1)]).limit(10)
+            reportList = []
+            #for every report grab this information
+            for report in reports:
+                reportItem = {
+                        'description':report['description'],
+                        'location':report['location'],
+                        'time_received':report['_id'].generation_time.isoformat(),
+                        'id':str(report['_id'])
+                        }
+                #add the report to our list to send to fe
+                reportList.append(reportItem)
+            #add an object that contains total number of reports in db
+            reportList.append({'count': db.Reports.count()})
+        else:
+            print location
+            #search for reports in location based on url
+            reports = db.Reports.find({'location': location}).sort([('$natural', -1)]).limit(10)
+            reportList = []
+            #create list of reports to send to fe
+            for report in reports:
+                reportItem = {
+                        'description':report['description'],
+                        'location':report['location'],
+                        'time_received':report['_id'].generation_time.isoformat(),
+                        'id':str(report['_id'])
+                        }
+                reportList.append(reportItem)
+            #add an object that contains total number of reports in db
+            reportList.append({'count': db.Reports.find({'location': location}).count()})
     except Exception,e:
         return str(e)
     return json.dumps(reportList)
@@ -109,29 +148,56 @@ def getReports():
 @application.route("/getMoreReports",methods=['POST'])
 def getMoreReports():
     try:
-        #find current page_num (passed from fe)
-        json_data = request.json['page_num']
-        page_num = json_data
-        #only show 10 items per page
-        per_page = 10
-        #offset equals what page we're on times total reports per page (tells us where to start)
-        offset = page_num * per_page
-        print offset
-        #starting at offset position, grab next 10 reports in order from newest to oldest
-        reports = db.Reports.find().sort([('$natural', -1)]).skip(offset).limit(per_page)
-        reportList = []
-        #for every report grab this information
-        for report in reports:
-            reportItem = {
-                    'description':report['description'],
-                    'location':report['location'],
-                    'time_received':report['_id'].generation_time.isoformat(),
-                    'id':str(report['_id'])
-                    }
-            #add the report to our list to send to fe
-            reportList.append(reportItem)
-        #add an object that contains total number of reports in db
-        reportList.append({'count': db.Reports.count()})
+        json_data = request.json['location']
+        location = json_data
+        if location == 'all' :
+            #find current page_num (passed from fe)
+            json_data = request.json['page_num']
+            page_num = json_data
+            #only show 10 items per page
+            per_page = 10
+            #offset equals what page we're on times total reports per page (tells us where to start)
+            offset = page_num * per_page
+            print offset
+            #starting at offset position, grab next 10 reports in order from newest to oldest
+            reports = db.Reports.find().sort([('$natural', -1)]).skip(offset).limit(per_page)
+            reportList = []
+            #for every report grab this information
+            for report in reports:
+                reportItem = {
+                        'description':report['description'],
+                        'location':report['location'],
+                        'time_received':report['_id'].generation_time.isoformat(),
+                        'id':str(report['_id'])
+                        }
+                #add the report to our list to send to fe
+                reportList.append(reportItem)
+            #add an object that contains total number of reports in db
+            reportList.append({'count': db.Reports.count()})
+        else:
+            #find current page_num (passed from fe)
+            json_data = request.json['page_num']
+            page_num = json_data
+            #only show 10 items per page
+            per_page = 10
+            #offset equals what page we're on times total reports per page (tells us where to start)
+            offset = page_num * per_page
+            print offset
+            #starting at offset position, grab next 10 reports in order from newest to oldest
+            reports = db.Reports.find({'location': location}).sort([('$natural', -1)]).skip(offset).limit(per_page)
+            reportList = []
+            #for every report grab this information
+            for report in reports:
+                reportItem = {
+                        'description':report['description'],
+                        'location':report['location'],
+                        'time_received':report['_id'].generation_time.isoformat(),
+                        'id':str(report['_id'])
+                        }
+                #add the report to our list to send to fe
+                reportList.append(reportItem)
+            #add an object that contains total number of reports in db
+            reportList.append({'count': db.Reports.find({'location': location}).count()})
     except Exception,e:
         return str(e)
     return json.dumps(reportList)

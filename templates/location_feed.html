@@ -33,7 +33,7 @@
         {{'{{locationTitle}}'}}
       </div>
       <div id="map"></div>
-      <div class="report_list">
+      <div class="report_list" infinite-scroll="getMoreReports()" infinite-scroll-distance="1" infinite-scroll-immediate-check="false" infinite-scroll-disabled="endOfResults == true">
         <div class="report_container" ng-repeat="report in reports track by $index">
           <div class="report_description">
             {{'{{report.description}}'}}
@@ -46,6 +46,7 @@
           </div>
         </div>
       </div>
+      <div class="loading_image" ng-if="loadingResults == true"></div>
     </div>
   </body>
 

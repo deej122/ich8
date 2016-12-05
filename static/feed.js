@@ -29,7 +29,8 @@ angular.module('ich8App', ['angularMoment', 'infinite-scroll'])
           method: 'POST',
           url: '/getNewReports',
           data: {
-            latest_post: $rootScope.latestPost
+            latest_post: $rootScope.latestPost,
+            location: 'all'
           }
         }).then(function(response) {
           console.log(JSON.stringify(response) + "get response");
@@ -67,7 +68,10 @@ angular.module('ich8App', ['angularMoment', 'infinite-scroll'])
         $rootScope.loadingResults = true;
         $http({
           method: 'POST',
-          url: '/getReports'
+          url: '/getReports',
+          data: {
+            location: 'all'
+          }
         }).then(function(response) {
           console.log(JSON.stringify(response) + "get response");
           $rootScope.reports = response.data;
@@ -115,7 +119,8 @@ angular.module('ich8App', ['angularMoment', 'infinite-scroll'])
               method: 'POST',
               url: '/getMoreReports',
               data: {
-                page_num: $rootScope.page_num
+                page_num: $rootScope.page_num,
+                location: 'all'
               }
             }).then(function(response) {
               //note that last requested post is last item in response
