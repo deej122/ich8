@@ -48,11 +48,11 @@
           </div>
         </form>
       </div> -->
-      <div class="report_list new_reports" style="border: 1px solid #ccc; padding: 5px;" ng-if="showNewReport == true" ng-click="exposeNewReports()">
-        {{'{{new_reports.length}}'}}
+      <div class="report_list new_reports"  ng-if="showNewReport == true" ng-click="exposeNewReports()">
+        <ng-pluralize count="new_reports.length" when="{'1': '1 New Report', 'other': '{} New Reports'}"></ng-pluralize>
       </div>
       <div class="report_list">
-        <div class="report_container" ng-repeat="report in reports track by $index">
+        <div class="report_container" ng-repeat="report in reports track by $index" ng-class="{new_reports_available: showNewReport}">
           <div class="report_description">
             {{'{{report.description}}'}}
           </div>

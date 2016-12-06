@@ -63,7 +63,7 @@ a:hover {
   margin-bottom: 20px;
 }
 .page_header.create_new_post_notice {
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 .new_report_container {
   margin: auto auto 40px auto;
@@ -129,6 +129,21 @@ a:hover {
   margin: auto;
   width: 60%;
 }
+.report_list.new_reports {
+  background: rgba(255, 106, 106, 0.1);
+  border: 1px solid #FF6A6A;
+  border-bottom: 0px;
+  color: #FF6A6A;
+  cursor: pointer;
+  border-radius: 2px;
+  font-size: 20px;
+  padding: 5px;
+  text-align: center;
+  width: 60%;
+}
+.report_list.new_reports:hover {
+  background: rgba(255, 106, 106, 0.3);
+}
 .report_container {
   border: 1px solid #FF6A6A;
   border-radius: 2px;
@@ -154,14 +169,17 @@ a:hover {
 .report_container .report_date {
   border-right: 1px solid #FF6A6A;
   font-weight: 200;
-  padding: 0px 10px;
-  width: 80%;
+  padding: 0px 0px 0px 10px;
+  width: calc(80% - 20px);
 }
 .report_container .report_location {
   font-weight: 400;
-  padding: 0px 10px;
   text-align: center;
-  width: 15.2%;
+  width: 21%;
+}
+.report_container.new_reports_available:first-of-type {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
 }
 .loading_image {
   background: url(../static/resources/loading.gif) no-repeat center center;
@@ -169,4 +187,21 @@ a:hover {
   height: 32px;
   margin: 10px auto auto auto;
   width: 32px;
+}
+@media only screen and (max-width: 767px) {
+  .page_header {
+    font-size: 32px;
+    text-align: center;
+    width: 100%;
+  }
+  .page_header.create_new_post_notice {
+    margin-bottom: 20px;
+  }
+  .report_list {
+    width: 90%;
+  }
+  #map {
+    height: 175px;
+    width: 350px;
+  }
 }
