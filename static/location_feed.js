@@ -2,23 +2,44 @@ angular.module('ich8App', ['ngRoute', 'angularMoment'])
   .config(function($locationProvider, $routeProvider) {
     $locationProvider.html5Mode(true);
   })
-  .controller('LocationFeedCtrl', ['$scope', '$http', '$timeout', '$location', 'moment', '$rootScope', function($scope, $http, $timeout, $location, moment, $rootScope) {
+  .controller('LocationFeedCtrl', ['$scope', '$http', '$timeout', '$location', 'moment', '$window', function($scope, $http, $timeout, $location, moment, $window) {
       $scope.report_content = {};      
-      $rootScope.page_num = 0;
-      $rootScope.reports = [];
-      $rootScope.totalCount = null;
-      $rootScope.new_reports = [];
-      $rootScope.showNewReport=false;
+      $scope.page_num = 0;
+      $scope.reports = [];
+      $scope.totalCount = null;
+      $scope.new_reports = [];
+      $scope.showNewReport=false;
 
-      $rootScope.loadingResults = false;
+      $scope.loadingResults = false;
       $scope.endOfResults = false;    
+
+      //use this for infinite scroll detection
+      angular.element($window).bind("scroll", function() {
+          var windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
+          var body = document.body, html = document.documentElement;
+          var docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight,  html.scrollHeight, html.offsetHeight);
+          windowBottom = windowHeight + window.pageYOffset;
+          if (windowBottom >= docHeight && !$scope.endOfResults) {
+            $scope.getMoreReports();
+          }
+      });
+      
+      //to add new reports to the top of the feed list vs just showing the number
+      $scope.exposeNewReports = function() {
+        for(i = 0; i < $scope.new_reports.length; i++) {
+          $scope.reports.unshift($scope.new_reports[i]);
+          $scope.totalCount = $scope.totalCount + 1;
+        }
+        $scope.new_reports = [];
+        $scope.latestPost = $scope.reports[0].id;
+        $scope.showNewReport=false;
+      };
       
       $scope.getReports = function(){
         var location = $location.path();
         while(location.charAt(0) === '/')
             location = location.substr(1);
-        $rootScope.location = location;
-        console.log($location);
+        $scope.location = location;
         $http({
           method: 'POST',
           url: '/getReports',
@@ -26,64 +47,49 @@ angular.module('ich8App', ['ngRoute', 'angularMoment'])
             'location': location
           }
         }).then(function(response) {
-          console.log(JSON.stringify(response) + "get response");
-          $rootScope.reports = response.data;
+          $scope.reports = response.data;
           //to remove the "count" object so no blank items show in feed
-          $rootScope.reports.pop();
-          $rootScope.latestPost = $rootScope.reports[0].id;
+          $scope.reports.pop();
+          $scope.latestPost = $scope.reports[0].id;
           //initialize page number to be one since we loaded first ten elements now
-          $rootScope.page_num = 1;
+          $scope.page_num = 1;
           //keep track of total number of reports with this (will tell us when to stop infinite scrolling)
-          $rootScope.totalCount = response.data[response.data.length - 1]['count'];
-          console.log('count' + $rootScope.totalCount);
-          console.log('initial reports ',$scope.reports);
+          $scope.totalCount = response.data[response.data.length - 1]['count'];
         }, function(error) {
           console.log(error);
         });
-        //hide loading animation
-        $rootScope.loadingResults = false;
         //start looking for newly created posts every ten seconds
         $scope.intervalFunction();
       };
-      $scope.intervalFunction = function(){
-        $timeout(function() {
-          $scope.getReports();
-        }, 10000)
-      };
 
       $scope.getNewReports = function(){
-        console.log($rootScope.latestPost);
         $http({
           method: 'POST',
           url: '/getNewReports',
           data: {
-            latest_post: $rootScope.latestPost,
-            location: $rootScope.location
+            latest_post: $scope.latestPost,
+            location: $scope.location
           }
         }).then(function(response) {
-          console.log(JSON.stringify(response) + "get response");
-          console.log(response.data[0].id == $rootScope.latestPost);
-          $rootScope.showNewReport = true;
-          console.log($rootScope.new_reports.length);
-          console.log($rootScope.new_reports);
-          if(response.data[0].id == $rootScope.latestPost) {
-            $rootScope.showNewReport = false;
+          $scope.showNewReport = true;
+          if(response.data[0].id == $scope.latestPost) {
+            $scope.showNewReport = false;
           }
-          else if($rootScope.new_reports.length > 0) {
+          else if($scope.new_reports.length > 0) {
             for(i = 0; i <= response.data.length - 2; i++) {
-              if($scope.containsId($rootScope.new_reports, response.data[i])) {
+              if($scope.containsId($scope.new_reports, response.data[i])) {
                 break;
               }
               else {
-                $rootScope.new_reports.push(response.data[i]);
+                $scope.new_reports.push(response.data[i]);
               }
             }
           }
           else {
-            $rootScope.new_reports = response.data;
-            $rootScope.new_reports.pop();
+            $scope.new_reports = response.data;
+            $scope.new_reports.pop();
           }
-          // $rootScope.totalCount = response.data[response.data.length - 1]['count']
+          // $scope.totalCount = response.data[response.data.length - 1]['count']
         }, function(error) {
           console.log(error);
         });
@@ -92,60 +98,55 @@ angular.module('ich8App', ['ngRoute', 'angularMoment'])
 
       //for NEXT reports to show after infinite scroll
       $scope.getMoreReports = function(){
-        console.log('page number ' + $rootScope.page_num);
         //if already tried to load next page (check id and also scope variable we set) --> do we need both?
-        if(($rootScope.reports[$rootScope.reports.length - 2].id == $rootScope.last_requested) || $rootScope.calledForNextPage == true) {
-          console.log('same or already called for next page');
+        if(($scope.reports[$scope.reports.length - 2].id == $scope.last_requested) || $scope.calledForNextPage == true) {
           return;
         }
         //if length of reports (on fe) equals number we have for total reports, stop infinite scroll
-        else if($rootScope.reports.length >= $rootScope.totalCount - 1) {
-          console.log("end of results");
+        else if($scope.reports.length >= $scope.totalCount - 1) {
           $scope.endOfResults = true;
           return;
         }
         //if there are still reports to find and a request is not currently in progress
         else {
           //note that a request is currently in progress
-          $rootScope.calledForNextPage = true;
+          $scope.calledForNextPage = true;
           //show loading animation
-          $rootScope.loadingResults = true;
+          $scope.loadingResults = true;
+          //cause i have that scroll listener.... this is kinda jank
+          $scope.$apply();
           //after 2 seconds, make request to server for more posts to show (10 more posts)
           $timeout(function() {
             $http({
               method: 'POST',
               url: '/getMoreReports',
               data: {
-                page_num: $rootScope.page_num,
-                location: $rootScope.location
+                page_num: $scope.page_num,
+                location: $scope.location
               }
             }).then(function(response) {
               //note that last requested post is last item in response
               //using length - 2 because of the "count" included in response.data
               //if there is more than one result in the array, there may be more to load
               if(response.data.length > 1) {
-                $rootScope.last_requested = response.data[response.data.length - 2].id;  
+                $scope.last_requested = response.data[response.data.length - 2].id;  
               }
               //if there is not more than one result, we're done loading so stop infinite scroll
               else {
-                console.log("end of results 2");
                 $scope.endOfResults = true;
               }
               //reset totalCount to be whatever it is now (in the db -- may have changed in the meantime)
-              $rootScope.totalCount = response.data[response.data.length - 1]['count'];
-              console.log(response + "get response");
+              $scope.totalCount = response.data[response.data.length - 1]['count'];
               //add posts to the reports array that is displaying on the page
               for(i = 0; i < response.data.length - 1; i++) {
-                $rootScope.reports.push(response.data[i]);
+                $scope.reports.push(response.data[i]);
               }
-              console.log("length of reports: " + $rootScope.reports.length);
               //increment page_num since we're now on the next page_
-              $rootScope.page_num = $rootScope.page_num + 1;
+              $scope.page_num = $scope.page_num + 1;
               //note that a request is not currently in progress anymore
-              $rootScope.calledForNextPage = false;
+              $scope.calledForNextPage = false;
               //hide loading animation
-              $rootScope.loadingResults = false;
-              console.log('more reports ',$scope.reports);
+              $scope.loadingResults = false;
             }, function(error) {
               console.log(error);
             })
@@ -155,7 +156,6 @@ angular.module('ich8App', ['ngRoute', 'angularMoment'])
       
       //create google map on callback from google map api (called in the url)
       initMap = function(){
-        console.log('hi');
         var map = new google.maps.Map(document.getElementById('map'), {
           zoom: 10
         });
@@ -188,11 +188,9 @@ angular.module('ich8App', ['ngRoute', 'angularMoment'])
       
       //add pin to google map on location based on url (zipcode)
       $scope.geocodeAddress = function(geocoder, resultsMap) {
-        console.log('yoyo');
         var address = $location.path();
         geocoder.geocode({'address': address}, function(results, status) {
           if (status === 'OK') {
-            console.log(results);
             var result = results[0];
             $scope.getLocationTitle(result);
             resultsMap.setCenter(results[0].geometry.location);

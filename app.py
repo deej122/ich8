@@ -23,25 +23,6 @@ def showReportList():
 @application.route('/<location>')
 def showLocationReportList(location):
     return render_template('location_feed.html')
-
-#get reports for a specific location    
-@application.route('/<location>/getReports',methods=['POST'])
-def getLocationReports(location):
-    try:
-        #search for reports in location based on url
-        reports = db.Reports.find({'location': location}).sort([('$natural', -1)]).limit(50)
-        reportList = []
-        #create list of reports to send to fe
-        for report in reports:
-            reportItem = {
-                    'description':report['description'],
-                    'location':report['location'],
-                    'time_received':report['_id'].generation_time.isoformat()
-                    }
-            reportList.append(reportItem)
-    except Exception,e:
-        return str(e)
-    return json.dumps(reportList)
     
 @application.route("/createReport", methods=['POST'])
 def createReport():
