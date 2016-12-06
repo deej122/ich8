@@ -29,10 +29,13 @@
       </div>
     </div>
     <div class="page_content">
-      <div class="location_title page_header">
+      <div class="location_title page_header" ng-if="locationDoesNotExist">
+        We're not sure where this report occurred
+      </div>
+      <div class="location_title page_header" ng-if="!locationDoesNotExist">
         {{'{{locationTitle}}'}}
       </div>
-      <div id="map"></div>
+      <div id="map" ng-if="!locationDoesNotExist"></div>
       <div class="report_list new_reports" style="border: 1px solid #ccc; padding: 5px;" ng-if="showNewReport == true" ng-click="exposeNewReports()">
         {{'{{new_reports.length}}'}}
       </div>

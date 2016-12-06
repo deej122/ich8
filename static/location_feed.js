@@ -9,7 +9,7 @@ angular.module('ich8App', ['ngRoute', 'angularMoment'])
       $scope.totalCount = null;
       $scope.new_reports = [];
       $scope.showNewReport=false;
-
+      $scope.locationDoesNotExist = false;
       $scope.loadingResults = false;
       $scope.endOfResults = false;    
 
@@ -98,59 +98,65 @@ angular.module('ich8App', ['ngRoute', 'angularMoment'])
 
       //for NEXT reports to show after infinite scroll
       $scope.getMoreReports = function(){
-        //if already tried to load next page (check id and also scope variable we set) --> do we need both?
-        if(($scope.reports[$scope.reports.length - 2].id == $scope.last_requested) || $scope.calledForNextPage == true) {
-          return;
+        if($scope.reports.length > 2) {
+          //if already tried to load next page (check id and also scope variable we set) --> do we need both?
+          if(($scope.reports[$scope.reports.length - 2].id == $scope.last_requested) || $scope.calledForNextPage == true) {
+            return;
+          }
+          //if length of reports (on fe) equals number we have for total reports, stop infinite scroll
+          else if($scope.reports.length >= $scope.totalCount - 1) {
+            $scope.endOfResults = true;
+            return;
+          }
+          //if there are still reports to find and a request is not currently in progress
+          else {
+            //note that a request is currently in progress
+            $scope.calledForNextPage = true;
+            //show loading animation
+            $scope.loadingResults = true;
+            //cause i have that scroll listener.... this is kinda jank
+            $scope.$apply();
+            //after 2 seconds, make request to server for more posts to show (10 more posts)
+            $timeout(function() {
+              $http({
+                method: 'POST',
+                url: '/getMoreReports',
+                data: {
+                  page_num: $scope.page_num,
+                  location: $scope.location
+                }
+              }).then(function(response) {
+                //note that last requested post is last item in response
+                //using length - 2 because of the "count" included in response.data
+                //if there is more than one result in the array, there may be more to load
+                if(response.data.length > 1) {
+                  $scope.last_requested = response.data[response.data.length - 2].id;  
+                }
+                //if there is not more than one result, we're done loading so stop infinite scroll
+                else {
+                  $scope.endOfResults = true;
+                }
+                //reset totalCount to be whatever it is now (in the db -- may have changed in the meantime)
+                $scope.totalCount = response.data[response.data.length - 1]['count'];
+                //add posts to the reports array that is displaying on the page
+                for(i = 0; i < response.data.length - 1; i++) {
+                  $scope.reports.push(response.data[i]);
+                }
+                //increment page_num since we're now on the next page_
+                $scope.page_num = $scope.page_num + 1;
+                //note that a request is not currently in progress anymore
+                $scope.calledForNextPage = false;
+                //hide loading animation
+                $scope.loadingResults = false;
+              }, function(error) {
+                console.log(error);
+              })
+            }, 2000)  
+          }
         }
-        //if length of reports (on fe) equals number we have for total reports, stop infinite scroll
-        else if($scope.reports.length >= $scope.totalCount - 1) {
+        else {
           $scope.endOfResults = true;
           return;
-        }
-        //if there are still reports to find and a request is not currently in progress
-        else {
-          //note that a request is currently in progress
-          $scope.calledForNextPage = true;
-          //show loading animation
-          $scope.loadingResults = true;
-          //cause i have that scroll listener.... this is kinda jank
-          $scope.$apply();
-          //after 2 seconds, make request to server for more posts to show (10 more posts)
-          $timeout(function() {
-            $http({
-              method: 'POST',
-              url: '/getMoreReports',
-              data: {
-                page_num: $scope.page_num,
-                location: $scope.location
-              }
-            }).then(function(response) {
-              //note that last requested post is last item in response
-              //using length - 2 because of the "count" included in response.data
-              //if there is more than one result in the array, there may be more to load
-              if(response.data.length > 1) {
-                $scope.last_requested = response.data[response.data.length - 2].id;  
-              }
-              //if there is not more than one result, we're done loading so stop infinite scroll
-              else {
-                $scope.endOfResults = true;
-              }
-              //reset totalCount to be whatever it is now (in the db -- may have changed in the meantime)
-              $scope.totalCount = response.data[response.data.length - 1]['count'];
-              //add posts to the reports array that is displaying on the page
-              for(i = 0; i < response.data.length - 1; i++) {
-                $scope.reports.push(response.data[i]);
-              }
-              //increment page_num since we're now on the next page_
-              $scope.page_num = $scope.page_num + 1;
-              //note that a request is not currently in progress anymore
-              $scope.calledForNextPage = false;
-              //hide loading animation
-              $scope.loadingResults = false;
-            }, function(error) {
-              console.log(error);
-            })
-          }, 2000)  
         }
       };
       
@@ -165,8 +171,12 @@ angular.module('ich8App', ['ngRoute', 'angularMoment'])
       }
       
       $scope.getLocationTitle = function(result){
+        //if location does not exist
+        if(!result) {
+          $scope.locationDoesNotExist = true;
+        }
         //if there is a county included in the response
-        if(Object.keys(result.address_components).length > 4) {
+        else if(Object.keys(result.address_components).length > 4) {
           var zip = result.address_components[0].short_name;
           var city = result.address_components[1].short_name;
           var county = result.address_components[2].short_name;
@@ -174,13 +184,22 @@ angular.module('ich8App', ['ngRoute', 'angularMoment'])
           var country = result.address_components[4].short_name;
           $scope.locationTitle = city + ', ' + state;
         }
-        //if there is no county included in the response
-        else {
+        else if((result.address_components).length == 4) {
           var zip = result.address_components[0].short_name;
           var city = result.address_components[1].short_name;
           var state = result.address_components[2].short_name;
           var country = result.address_components[3].short_name;
           $scope.locationTitle = city + ', ' + state;
+        }
+        else if((result.address_components).length == 3) {
+          var zip = result.address_components[0].short_name;
+          var city = result.address_components[1].short_name;
+          var country = result.address_components[2].long_name;
+          $scope.locationTitle = city + ', ' + country;
+        }
+        //fallback for out of country or something
+        else {
+          $scope.locationTitle = result.formatted_address;
         }
         //apply to scope now instead of waiting for scope to update
         $scope.$apply();

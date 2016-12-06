@@ -61,6 +61,7 @@ a:hover {
 }
 .page_header.location_title {
   margin-bottom: 20px;
+  text-align: center;
 }
 .page_header.create_new_post_notice {
   margin-bottom: 30px;
