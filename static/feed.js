@@ -16,8 +16,6 @@ angular.module('ich8App', ['angularMoment'])
           var body = document.body, html = document.documentElement;
           var docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight,  html.scrollHeight, html.offsetHeight);
           windowBottom = windowHeight + window.pageYOffset;
-          console.log("end1");
-          console.log($scope.endOfResults);
           if (windowBottom >= docHeight && !$scope.endOfResults) {
             $scope.getMoreReports();
           }
@@ -166,6 +164,21 @@ angular.module('ich8App', ['angularMoment'])
           }, function(error) {
               console.log(error);
           });
+      };
+      
+      //reporting function
+      $scope.reportPost = function(report_id) {
+        $http({
+            method: 'POST',
+            url: '/reportPost',
+            data: {
+                report_id: report_id
+            }
+        }).then(function(response) {
+            console.log(response);
+        }, function(error) {
+            console.log(error);
+        });
       };
 
       //function to wait ten seconds

@@ -221,7 +221,22 @@ angular.module('ich8App', ['ngRoute', 'angularMoment'])
             alert('Geocode was not successful for the following reason: ' + status);
           }
         });
-      }
+      };
+      
+      //reporting function
+      $scope.reportPost = function(report_id) {
+        $http({
+            method: 'POST',
+            url: '/reportPost',
+            data: {
+                report_id: report_id
+            }
+        }).then(function(response) {
+            console.log(response);
+        }, function(error) {
+            console.log(error);
+        });
+      };
       
       //function to wait ten seconds
       //used to check for new reports only periodically

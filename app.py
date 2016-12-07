@@ -39,6 +39,18 @@ def createReport():
     except Exception,e:
         return jsonify(status='ERROR',message=str(e))
 
+@application.route("/reportPost", methods=['POST'])
+def reportPost():
+    try:
+        json_data = request.json['report_id']
+        report_id = json_data
+        
+        reported_post = db.Reports.find_and_modify(query = {'_id': ObjectId(report_id)}, update = { '$inc': {'report_count': 1} })
+        return jsonify(status='OK', message='post successfully reported')
+    except Exception,e:
+        return jsonify(status='ERROR',message=str(e))
+        
+        
 #Check for new reports (doesn't work right yet)
 @application.route("/getNewReports",methods=['POST'])
 def getNewReports():
