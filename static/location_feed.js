@@ -8,6 +8,7 @@ angular.module('ich8App', ['ngRoute', 'angularMoment'])
       $scope.reports = [];
       $scope.totalCount = null;
       $scope.new_reports = [];
+      $scope.num_new_reports = $scope.new_reports.length;
       $scope.showNewReport=false;
       $scope.locationDoesNotExist = false;
       $scope.loadingResults = false;
@@ -87,6 +88,7 @@ angular.module('ich8App', ['ngRoute', 'angularMoment'])
               //otherwise add it if it is new
               else {
                 $scope.new_reports.push(response.data[i]);
+                $scope.num_new_reports = $scope.num_new_reports + 1;
               }
             }
           }
@@ -94,6 +96,7 @@ angular.module('ich8App', ['ngRoute', 'angularMoment'])
           else {
             $scope.new_reports = response.data;
             $scope.new_reports.pop();
+            $scope.num_new_reports = $scope.new_reports.length;
           }
           // $scope.totalCount = response.data[response.data.length - 1]['count']
         }, function(error) {
@@ -110,7 +113,7 @@ angular.module('ich8App', ['ngRoute', 'angularMoment'])
             return;
           }
           //if length of reports (on fe) equals number we have for total reports, stop infinite scroll
-          else if($scope.reports.length >= $scope.totalCount - 1) {
+          else if($scope.reports.length >= $scope.totalCount) {
             $scope.endOfResults = true;
             return;
           }
@@ -129,7 +132,7 @@ angular.module('ich8App', ['ngRoute', 'angularMoment'])
                 url: '/getMoreReports',
                 data: {
                   page_num: $scope.page_num,
-                  num_new_reports: $scope.new_reports.length,
+                  num_new_reports: $scope.num_new_reports,
                   location: $scope.location
                 }
               }).then(function(response) {

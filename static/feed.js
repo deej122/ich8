@@ -5,8 +5,8 @@ angular.module('ich8App', ['angularMoment'])
       $scope.reports = [];
       $scope.totalCount = null;
       $scope.new_reports = [];
+      $scope.num_new_reports = $scope.new_reports.length;
       $scope.showNewReport=false;
-
       $scope.loadingResults = false;
       $scope.endOfResults = false;
       
@@ -59,6 +59,7 @@ angular.module('ich8App', ['angularMoment'])
               //otherwise add it if it is new
               else {
                 $scope.new_reports.push(response.data[i]);
+                $scope.num_new_reports = $scope.num_new_reports + 1;
               }
             }
           }
@@ -66,6 +67,7 @@ angular.module('ich8App', ['angularMoment'])
           else {
             $scope.new_reports = response.data;
             $scope.new_reports.pop();
+            $scope.num_new_reports = $scope.new_reports.length;
           }
           // $scope.totalCount = response.data[response.data.length - 1]['count']
         }, function(error) {
@@ -124,7 +126,7 @@ angular.module('ich8App', ['angularMoment'])
               url: '/getMoreReports',
               data: {
                 page_num: $scope.page_num,
-                num_new_reports: $scope.new_reports.length,
+                num_new_reports: $scope.num_new_reports,
                 location: 'all'
               }
             }).then(function(response) {
