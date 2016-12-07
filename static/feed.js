@@ -105,7 +105,7 @@ angular.module('ich8App', ['angularMoment'])
           return;
         }
         //if length of reports (on fe) equals number we have for total reports, stop infinite scroll
-        else if($scope.reports.length >= $scope.totalCount - 1) {
+        else if($scope.reports.length >= $scope.totalCount) {
           $scope.endOfResults = true;
           return;
         }
