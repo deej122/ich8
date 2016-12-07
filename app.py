@@ -141,16 +141,16 @@ def getReports():
 @application.route("/getMoreReports",methods=['POST'])
 def getMoreReports():
     try:
-        json_data = request.json['location']
-        location = json_data
+        json_data = request.json
+        location = json_data['location']
         if location == 'all' :
             #find current page_num (passed from fe)
-            json_data = request.json['page_num']
-            page_num = json_data
-            #only show 10 items per page
+            page_num = json_data['page_num']
+            num_new_reports = json_data['num_new_reports']
+            #only show 10 items per page plus number of new posts so we don't show dupes
             per_page = 10
             #offset equals what page we're on times total reports per page (tells us where to start)
-            offset = page_num * per_page
+            offset = (page_num * per_page) + num_new_reports
             print offset
             #starting at offset position, grab next 10 reports in order from newest to oldest
             reports = db.Reports.find().sort([('$natural', -1)]).skip(offset).limit(per_page)
@@ -169,12 +169,12 @@ def getMoreReports():
             reportList.append({'count': db.Reports.count()})
         else:
             #find current page_num (passed from fe)
-            json_data = request.json['page_num']
-            page_num = json_data
+            page_num = json_data['page_num']
+            num_new_reports = json_data['num_new_reports']
             #only show 10 items per page
             per_page = 10
             #offset equals what page we're on times total reports per page (tells us where to start)
-            offset = page_num * per_page
+            offset = (page_num * per_page) + num_new_reports
             print offset
             #starting at offset position, grab next 10 reports in order from newest to oldest
             reports = db.Reports.find({'location': location}).sort([('$natural', -1)]).skip(offset).limit(per_page)

@@ -124,6 +124,7 @@ angular.module('ich8App', ['angularMoment'])
               url: '/getMoreReports',
               data: {
                 page_num: $scope.page_num,
+                num_new_reports: $scope.new_reports.length,
                 location: 'all'
               }
             }).then(function(response) {
@@ -131,7 +132,7 @@ angular.module('ich8App', ['angularMoment'])
               //using length - 2 because of the "count" included in response.data
               //if there is more than one result in the array, there may be more to load
               if(response.data.length > 1) {
-                $scope.last_requested = response.data[response.data.length - 2].id;  
+                $scope.last_requested = response.data[response.data.length - 2].id;
               }
               //if there is not more than one result, we're done loading so stop infinite scroll
               else {

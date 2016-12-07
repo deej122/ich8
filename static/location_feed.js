@@ -129,6 +129,7 @@ angular.module('ich8App', ['ngRoute', 'angularMoment'])
                 url: '/getMoreReports',
                 data: {
                   page_num: $scope.page_num,
+                  num_new_reports: $scope.new_reports.length,
                   location: $scope.location
                 }
               }).then(function(response) {
