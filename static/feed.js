@@ -43,20 +43,26 @@ angular.module('ich8App', ['angularMoment'])
             location: 'all'
           }
         }).then(function(response) {
+          //show the number of new reports
           $scope.showNewReport = true;
+          //if not new report, hide it
           if(response.data[0].id == $scope.latestPost) {
             $scope.showNewReport = false;
           }
+          //if there are already new reports that are unread
           else if($scope.new_reports.length > 0) {
             for(i = 0; i <= response.data.length - 2; i++) {
+              //if post is already counted as new, don't add to the list
               if($scope.containsId($scope.new_reports, response.data[i])) {
                 break;
               }
+              //otherwise add it if it is new
               else {
                 $scope.new_reports.push(response.data[i]);
               }
             }
           }
+          //if there are not already new reports, create the list
           else {
             $scope.new_reports = response.data;
             $scope.new_reports.pop();
