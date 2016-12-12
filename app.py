@@ -19,6 +19,10 @@ moment = Moment(application)
 @application.route('/')
 def showReportList():
     return render_template('feed.html')
+    
+@application.route('/about')
+def showAboutPage():
+    return render_template('about.html')
 
 @application.route('/<location>')
 def showLocationReportList(location):

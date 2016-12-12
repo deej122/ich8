@@ -1,4 +1,5 @@
 body {
+  background: #f9f9f9;
   font-family: 'Raleway', sans-serif;
 }
 .pull-left {
@@ -13,7 +14,7 @@ body {
   clear: both;
 }
 a {
-  color: #FF6A6A;
+  color: inherit;
   text-decoration: none;
 }
 a:hover {
@@ -23,6 +24,7 @@ a:hover {
 .topbar {
   background: #fff;
   border-bottom: 1px solid #FF6A6A;
+  color: #FF6A6A;
   height: 52px;
   left: 0px;
   right: 0px;
@@ -31,13 +33,19 @@ a:hover {
   z-index: 9999;
 }
 .topbar .brand {
-  color: #FF6A6A;
   font-size: 32px;
   line-height: 52px;
   margin-left: 20px;
 }
 .topbar .brand > a {
   text-decoration: none;
+}
+.topbar .alt_link_container {
+  line-height: 52px;
+  margin-left: 65%;
+}
+.topbar .alt_link_container a:nth-of-type(2) {
+  margin-left: 30px;
 }
 .page_content {
   margin-top: 80px;
@@ -50,18 +58,18 @@ a:hover {
 }
 .page_header {
   border-bottom: 1px solid #ccc;
-  color: #ccc;
+  color: #999;
   cursor: text;
   font-size: 40px;
   font-style: italic;
   font-weight: 300;
   margin: auto;
   padding: 0 0 10px 0;
+  text-align: center;
   width: 60%;
 }
 .page_header.location_title {
   margin-bottom: 20px;
-  text-align: center;
 }
 .page_header.create_new_post_notice {
   margin-bottom: 30px;
@@ -128,29 +136,30 @@ a:hover {
 }
 .report_list {
   margin: auto;
-  width: 60%;
+  width: 50%;
 }
 .report_list.new_reports {
   background: rgba(255, 106, 106, 0.1);
   border: 1px solid #FF6A6A;
-  border-bottom: 0px;
   color: #FF6A6A;
   cursor: pointer;
   border-radius: 2px;
   font-size: 20px;
+  margin-bottom: 20px;
   padding: 5px;
   text-align: center;
-  width: 60%;
+  width: 50%;
 }
 .report_list.new_reports:hover {
   background: rgba(255, 106, 106, 0.3);
 }
 .report_container {
-  border: 1px solid #FF6A6A;
-  border-radius: 2px;
-  color: #FF6A6A;
+  background: #fff;
+  box-shadow: 0px 2px 5px #ccc;
+  color: #333;
   font-size: 22px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  position: relative;
   width: 100%;
 }
 .report_container:last-of-type {
@@ -160,23 +169,69 @@ a:hover {
   border-bottom: 1px solid #FF6A6A;
   font-weight: 300;
   min-height: 48px;
-  padding: 10px;
+  padding: 15px 10px;
 }
 .report_container .report_meta_information {
+  color: #999;
   font-size: 20px;
   font-style: italic;
   line-height: 42px;
+  padding: 0px 10px;
 }
 .report_container .report_date {
   border-right: 1px solid #FF6A6A;
   font-weight: 200;
-  padding: 0px 0px 0px 10px;
+  padding: 5px 0px;
   width: calc(80% - 20px);
 }
 .report_container .report_location {
   font-weight: 400;
   text-align: center;
-  width: 21%;
+  padding: 5px 0px;
+  width: 22.7%;
+}
+.report_container .report_location .fa {
+  color: #FF6A6A;
+  font-size: 16px;
+}
+.report_container .report_post_container {
+  color: #FF6A6A;
+  cursor: pointer;
+  position: absolute;
+  font-size: 16px;
+  right: 5px;
+  top: 3px;
+}
+.report_container .report_post_container .fa {
+  opacity: 0.7;
+}
+.report_container .report_post_container .tooltip_text {
+  background: rgba(3, 3, 3, 0.8);
+  border-radius: 10px;
+  color: #fff;
+  display: none;
+  font-size: 12px;
+  padding: 5px 10px;
+  position: absolute;
+  top: -3px;
+  right: -113px;
+  width: 88px;
+}
+.report_container .report_post_container .tooltip_text::after {
+  content: "";
+  position: absolute;
+  top: 31%;
+  left: -4%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent rgba(3, 3, 3, 0.8) transparent transparent;
+}
+.report_container .report_post_container:hover .fa {
+  opacity: 1;
+}
+.report_container .report_post_container:hover .tooltip_text {
+  display: block;
 }
 .report_container.new_reports_available:first-of-type {
   border-top-left-radius: 0px;
@@ -204,5 +259,18 @@ a:hover {
   #map {
     height: 175px;
     width: 350px;
+  }
+}
+@media only screen and (max-width: 867px) {
+  .topbar .alt_link_container {
+    margin-left: 5% !important;
+  }
+  .topbar .alt_link_container a:nth-of-type(2) {
+    margin-left: 10px;
+  }
+}
+@media only screen and (max-width: 1100px) {
+  .topbar .alt_link_container {
+    margin-left: 55%;
   }
 }

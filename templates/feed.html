@@ -11,17 +11,22 @@
       <title>ich8 Project - Feed</title>
       <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
       <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular-route.min.js"></script>
+      <script src="https://use.fontawesome.com/a9a28c7f6a.js"></script>
       <script src="../static/libraries/moment.js"></script>
       <script src="../static/libraries/angular-moment.min.js"></script>
       <script src="../static/feed.js"></script>
   </head>
 
   <body ng-controller="FeedCtrl">
-    <div class="topbar">
-      <div class="brand">
+    <div class="topbar clearfix">
+      <div class="brand pull-left">
         <a href="/">
           The ich8 Project
         </a>
+      </div>
+      <div class="alt_link_container pull-left">
+        <a href="/" target="_self">Home</a>
+        <a href="/about" target="_self">About</a>
       </div>
     </div>
     <div class="page_content">
@@ -59,8 +64,15 @@
           <div class="report_meta_information clearfix">
             <div class="report_date pull-left" am-time-ago="report.time_received"></div>
             <div class="report_location pull-left">
-              <a href="/{{'{{report.location}}'}}">{{'{{report.location}}'}}</a>
+              <a href="/{{'{{report.location}}'}}">
+                <span class="fa fa-map-marker"></span>
+                {{'{{report.location}}'}}
+              </a>
             </div>
+          </div>
+          <div class="report_post_container" ng-click="reportPost(report._id)">
+            <span class="fa fa-exclamation-circle"></span>
+            <span class="tooltip_text">Report this post</span>
           </div>
         </div>
       </div>
