@@ -48,6 +48,12 @@ angular.module('ich8App', ['angularMoment'])
           //if not new report, hide it
           if(response.data[0].id == $scope.latestPost) {
             $scope.showNewReport = false;
+            //check if no reports
+            if($scope.noReports == true) {
+              if($scope.reports.length > 0) {
+                $scope.noReports = false;
+              }
+            };
           }
           //if there are already new reports that are unread
           else if($scope.new_reports.length > 0) {
@@ -88,11 +94,17 @@ angular.module('ich8App', ['angularMoment'])
           $scope.reports = response.data;
           //to remove the "count" object so no blank items show in feed
           $scope.reports.pop();
-          $scope.latestPost = $scope.reports[0].id;
-          //initialize page number to be one since we loaded first ten elements now
-          $scope.page_num = 1;
-          //keep track of total number of reports with this (will tell us when to stop infinite scrolling)
-          $scope.totalCount = response.data[response.data.length - 1]['count'];
+          if($scope.reports.length > 0) {
+            $scope.latestPost = $scope.reports[0].id;
+            //initialize page number to be one since we loaded first ten elements now
+            $scope.page_num = 1;
+            //keep track of total number of reports with this (will tell us when to stop infinite scrolling)
+            $scope.totalCount = response.data[response.data.length - 1]['count'];
+          }
+          else {
+            $scope.noReports = true;
+            return;
+          }
         }, function(error) {
           console.log(error);
         });
