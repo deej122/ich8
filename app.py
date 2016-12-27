@@ -214,7 +214,8 @@ def createReportFromText():
             #store from and body in the session
             session['from_num'] = request.values.get('From')
             session['message_body'] = request.values.get('Body')
-            
+            #save first image sent in message
+            session['message_image'] = request.values.get('MediaUrl0')
             # db.Reports.insert_one({
             #     'description':message_body, 'location':location, 'time_received':time_received, 'owner':from_num
             #     })
@@ -240,6 +241,7 @@ def createReportFromText():
             #variables for easy reading
             from_num = session['from_num']
             message_body = session['message_body']
+            message_image = session['message_image']
             #if there is no zipcode ask them to resend the message with a zipcode this time
             if zip_code is None:
                 resp = twilio.twiml.Response()
@@ -253,7 +255,7 @@ def createReportFromText():
                     trimmed_zip_code = zip_code[:5]
                     #store post in the db
                     db.Reports.insert_one({
-                        'description':message_body, 'full_location':full_location, 'location': trimmed_zip_code, 'full_zip_code': zip_code, 'owner':from_num
+                        'description':message_body, 'attachment':message_image, 'full_location':full_location, 'location': trimmed_zip_code, 'full_zip_code': zip_code, 'owner':from_num
                         })
                     #clear the user session, they are done now. Let them know.
                     session.clear()
