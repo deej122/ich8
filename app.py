@@ -234,7 +234,7 @@ def createReportFromText():
             resp = twilio.twiml.Response()
             resp.message("Sorry, there was an issue creating your report. Please try again! " + str(e) )
             return str(resp)
-    #if they are in a session (already submitted a post successfullt)
+    #if they are in a session (already submitted a post successfully)
     else:
         try:
             #grab the location from the body of the message
@@ -268,13 +268,13 @@ def createReportFromText():
                 except Exception,e:
                     #if there was an error ask them to try sending  location again
                     resp = twilio.twiml.Response()
-                    resp.message("Sorry, there was an issue creating your report. Please send your location, again!" + str(e))
+                    resp.message("Sorry, there was an issue creating your report. Please send your location again!" + str(e))
                     return str(resp)
         #if there was some other error, clear the session and let them know
         except Exception,e:
             session.clear()
             resp = twilio.twiml.Response()
-            resp.message("Sorry, there was an issue creating your report. Please send your location, again!" + str(e) )
+            resp.message("Sorry, there was an issue creating your report. Please send your location again!" + str(e) )
             return str(resp)
     
 if __name__ == "__main__":
