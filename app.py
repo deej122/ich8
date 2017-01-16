@@ -8,8 +8,10 @@ import datetime
 import uuid
 import re
 
-client = MongoClient('localhost:27017')
-db = client.ReportData
+MONGO_URL = os.environ.get('MONGOHQ_URL')
+client = MongoClient(MONGO_URL)
+database = client.app62236751
+db = database.ReportData
 
 application = Flask(__name__)
 application.secret_key = 'Bo\xaa]txn\xee\x8f\xb1\x15\x02s\xb8=JQS|\xe0\x15\xf4\x1d\x08'
