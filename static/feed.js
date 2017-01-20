@@ -9,7 +9,7 @@ angular.module('ich8App', ['angularMoment'])
       $scope.showNewReport=false;
       $scope.loadingResults = false;
       $scope.endOfResults = false;
-      $scope.postReported = false;
+      $scope.postReported = [];
       
       //use this for infinite scroll detection
       angular.element($window).bind("scroll", function() {
@@ -197,7 +197,7 @@ angular.module('ich8App', ['angularMoment'])
                 report_id: report_id
             }
         }).then(function(response) {
-            $scope.postReported = true;
+            $scope.postReported.push(report._id);
             console.log(response);
         }, function(error) {
             console.log(error);
