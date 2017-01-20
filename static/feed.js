@@ -198,6 +198,8 @@ angular.module('ich8App', ['angularMoment'])
             }
         }).then(function(response) {
             $scope.postReported.push(report_id);
+            console.log(postReported);
+            console.log(report_id);
             console.log(response);
         }, function(error) {
             console.log(error);
