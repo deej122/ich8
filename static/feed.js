@@ -190,6 +190,7 @@ angular.module('ich8App', ['angularMoment'])
       
       //reporting function
       $scope.reportPost = function(report_id) {
+        $scope.postReported.push(report_id);
         $http({
             method: 'POST',
             url: '/reportPost',
@@ -197,9 +198,6 @@ angular.module('ich8App', ['angularMoment'])
                 report_id: report_id
             }
         }).then(function(response) {
-            $scope.postReported.push(report_id);
-            console.log($scope.postReported);
-            console.log(report_id);
             console.log(response);
         }, function(error) {
             console.log(error);
