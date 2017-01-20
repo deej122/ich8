@@ -206,7 +206,7 @@ angular.module('ich8App', ['angularMoment'])
 
       //check if post has been reported on this page load
       $scope.postReported =  function(post){
-          return $.inArray(post, $scope.reportedPosts) > -1;
+        $scope.reportedPosts.indexOf(post) > -1;
       }
 
       //function to wait ten seconds
