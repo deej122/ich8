@@ -74,7 +74,7 @@
             </div>
           </div>
           <div class="report_post_container" ng-click="reportPost(report._id)">
-            <span class="fa fa-exclamation-circle"></span>
+            <span class="fa fa-exclamation-circle" ng-class="{reported_post: postReported == true}"></span>
             <span class="tooltip_text">Report this post</span>
           </div>
         </div>
