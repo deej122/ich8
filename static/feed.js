@@ -9,7 +9,7 @@ angular.module('ich8App', ['angularMoment'])
       $scope.showNewReport=false;
       $scope.loadingResults = false;
       $scope.endOfResults = false;
-      $scope.postReported = [];
+      $scope.reportedPosts = [];
       
       //use this for infinite scroll detection
       angular.element($window).bind("scroll", function() {
@@ -190,7 +190,7 @@ angular.module('ich8App', ['angularMoment'])
       
       //reporting function
       $scope.reportPost = function(report_id) {
-        $scope.postReported.push(report_id);
+        $scope.reportedPosts.push(report_id);
         $http({
             method: 'POST',
             url: '/reportPost',
@@ -203,6 +203,11 @@ angular.module('ich8App', ['angularMoment'])
             console.log(error);
         });
       };
+
+      //check if post has been reported on this page load
+      $scope.postReported =  function(post){
+          return $.inArray(post, $scope.reportedPosts) > -1;
+      }
 
       //function to wait ten seconds
       //used to check for new reports only periodically
