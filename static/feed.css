@@ -202,6 +202,9 @@ a:hover {
   color: #FF6A6A;
   font-size: 16px;
 }
+.report_container .report_location .fa.reported_post {
+  color: #ccc;
+}
 .report_container .report_post_container {
   color: #FF6A6A;
   cursor: pointer;
