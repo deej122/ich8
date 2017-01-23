@@ -13,7 +13,8 @@ angular.module('ich8App', ['ngRoute', 'angularMoment'])
       $scope.locationDoesNotExist = false;
       $scope.loadingResults = false;
       $scope.endOfResults = false;
-      $scope.noReports = false;  
+      $scope.noReports = false;
+      $scope.reported = [];  
 
       //use this for infinite scroll detection
       angular.element($window).bind("scroll", function() {
@@ -255,6 +256,7 @@ angular.module('ich8App', ['ngRoute', 'angularMoment'])
                 report_id: report_id
             }
         }).then(function(response) {
+            $scope.reported.push(report_id);
             console.log(response);
         }, function(error) {
             console.log(error);
