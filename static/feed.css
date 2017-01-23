@@ -276,6 +276,11 @@ a:hover {
 .about_description ol li {
   margin-bottom: 10px;
 }
+@media only screen and (max-width: 400px) {
+  .report_location {
+    width: 25.7%;
+  }
+}
 @media only screen and (max-width: 767px) {
   .page_header {
     font-size: 32px;
