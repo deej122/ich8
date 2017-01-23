@@ -278,7 +278,7 @@ a:hover {
 }
 @media only screen and (max-width: 400px) {
   .report_location {
-    width: 25.7%;
+    width: 25.7% !important;
   }
 }
 @media only screen and (max-width: 767px) {
