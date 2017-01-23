@@ -264,8 +264,17 @@ a:hover {
   margin: auto;
   width: 50%;
 }
-.about_description p.about_how_to {
+.about_description h3.about_heading {
+  margin-bottom: -10px;
+}
+.about_description .about_note {
   color: #FF6A6A;
+}
+.about_description span.disclaimer {
+  font-style: italic;
+}
+.about_description ol li {
+  margin-bottom: 10px;
 }
 @media only screen and (max-width: 767px) {
   .page_header {
