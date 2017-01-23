@@ -257,9 +257,9 @@ angular.module('ich8App', ['ngRoute', 'angularMoment'])
             }
         }).then(function(response) {
             $scope.reported.push(report_id);
-            console.log(response);
+            console.log('post reported successfully');
         }, function(error) {
-            console.log(error);
+            console.log('post not reported successfully');
         });
       };
       
